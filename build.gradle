@@ -1,10 +1,47 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    apply from:'global-dependencies.gradle'
+    apply from:'global-config.gradle'
+}
+
 plugins {
     id 'com.android.application' version '7.2.2' apply false
     id 'com.android.library' version '7.2.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10' apply false
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+subprojects { project ->
+    afterEvaluate {
+        if (it.hasProperty('android')) {
+
+            android {
+
+                compileSdkVersion config.compileSdk
+
+                defaultConfig {
+                    minSdkVersion config.minSdk
+                    targetSdkVersion config.targetSdk
+                }
+
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_11
+                    targetCompatibility JavaVersion.VERSION_11
+                }
+
+                kotlinOptions {
+                    jvmTarget = '1.8'
+                }
+
+                buildTypes {
+                    debug {}
+                    qa {}
+                    release {}
+                }
+            }
+        }
+    }
 }
